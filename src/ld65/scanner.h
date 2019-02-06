@@ -110,6 +110,7 @@ typedef enum {
 
     CFGTOK_ATARIEXE,
     CFGTOK_O65,
+    CFGTOK_IMG,
     CFGTOK_BIN,
 
     CFGTOK_SMALL,

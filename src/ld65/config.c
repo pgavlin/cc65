@@ -63,6 +63,7 @@
 #include "exports.h"
 #include "expr.h"
 #include "global.h"
+#include "img.h"
 #include "memarea.h"
 #include "o65.h"
 #include "objdata.h"
@@ -149,6 +150,7 @@ static Collection       CfgSymbols = STATIC_COLLECTION_INITIALIZER;
 
 /* Descriptor holding information about the binary formats */
 static BinDesc* BinFmtDesc      = 0;
+static ImgDesc* ImgFmtDesc      = 0;
 static O65Desc* O65FmtDesc      = 0;
 static XexDesc* XexFmtDesc      = 0;
 
@@ -547,6 +549,7 @@ static void ParseFiles (void)
     static const IdentTok Formats [] = {
         {   "ATARI",    CFGTOK_ATARIEXE },
         {   "O65",      CFGTOK_O65      },
+        {   "IMG",      CFGTOK_IMG      },
         {   "BIN",      CFGTOK_BIN      },
         {   "BINARY",   CFGTOK_BIN      },
     };
@@ -604,6 +607,10 @@ static void ParseFiles (void)
 
                         case CFGTOK_BIN:
                             F->Format = BINFMT_BINARY;
+                            break;
+
+                        case CFGTOK_IMG:
+                            F->Format = BINFMT_IMG;
                             break;
 
                         case CFGTOK_O65:
@@ -1630,6 +1637,7 @@ void CfgRead (void)
 {
     /* Create the descriptors for the binary formats */
     BinFmtDesc = NewBinDesc ();
+    ImgFmtDesc = NewImgDesc ();
     O65FmtDesc = NewO65Desc ();
     XexFmtDesc = NewXexDesc ();
 
@@ -2165,6 +2173,10 @@ void CfgWriteTarget (void)
 
                     case BINFMT_BINARY:
                         BinWriteTarget (BinFmtDesc, F);
+                        break;
+
+                    case BINFMT_IMG:
+                        ImgWriteTarget (ImgFmtDesc, F);
                         break;
 
                     case BINFMT_O65:

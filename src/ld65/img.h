@@ -1,15 +1,15 @@
 /*****************************************************************************/
 /*                                                                           */
-/*                                 binfmt.c                                  */
+/*                                   bin.h                                   */
 /*                                                                           */
-/*               Binary format definitions for the ld65 linker               */
+/*                  Module to handle the raw binary format                   */
 /*                                                                           */
 /*                                                                           */
 /*                                                                           */
-/* (C) 1999     Ullrich von Bassewitz                                        */
-/*              Wacholderweg 14                                              */
-/*              D-70597 Stuttgart                                            */
-/* EMail:       uz@musoftware.de                                             */
+/* (C) 1999-2001 Ullrich von Bassewitz                                       */
+/*               Wacholderweg 14                                             */
+/*               D-70597 Stuttgart                                           */
+/* EMail:        uz@cc65.org                                                 */
 /*                                                                           */
 /*                                                                           */
 /* This software is provided 'as-is', without any expressed or implied       */
@@ -33,12 +33,12 @@
 
 
 
-/* common */
-#include "target.h"
+#ifndef IMG_H
+#define IMG_H
 
-/* ld65 */
-#include "error.h"
-#include "binfmt.h"
+
+
+#include "config.h"
 
 
 
@@ -48,8 +48,8 @@
 
 
 
-/* Default format (depends on target system) */
-unsigned char DefaultBinFmt     = BINFMT_BINARY;
+/* Structure describing the format */
+typedef struct ImgDesc ImgDesc;
 
 
 
@@ -59,37 +59,17 @@ unsigned char DefaultBinFmt     = BINFMT_BINARY;
 
 
 
-int RelocatableBinFmt (unsigned Format)
-/* Return true if this is a relocatable format, return false otherwise */
-{
-    int Reloc = 0;
+ImgDesc* NewImgDesc (void);
+/* Create a new binary format descriptor */
 
-    /* Resolve the default format */
-    if (Format == BINFMT_DEFAULT) {
-        Format = DefaultBinFmt;
-    }
+void FreeImgDesc (ImgDesc* D);
+/* Free a binary format descriptor */
 
-    /* Check the type */
-    switch (Format) {
+void ImgWriteTarget (ImgDesc* D, File* F);
+/* Write a binary output file */
 
-        case BINFMT_BINARY:
-        case BINFMT_ATARIEXE:
-            Reloc = 0;
-            break;
 
-        case BINFMT_IMG:
-            Reloc = 0;
-            break;
 
-        case BINFMT_O65:
-            Reloc = 1;
-            break;
+/* End of img.h */
 
-        default:
-            Internal ("Invalid format specifier: %u", Format);
-
-    }
-
-    /* Return the flag */
-    return Reloc;
-}
+#endif
